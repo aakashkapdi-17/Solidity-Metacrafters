@@ -1,0 +1,30 @@
+.App {
+  height: 70vh;
+  width: 70vh;
+  border: 2px solid black;
+  margin: auto;
+  margin-top: 50px;
+}
+
+h1 {
+  display: flex;
+  justify-content: center;
+}
+
+.function-buttons {
+  display: flex;
+  flex-direction: column;
+
+  flex-wrap: wrap;
+  align-content: center;
+}
+
+.btn {
+  display: inline-flex;
+  height: 40px;
+  width: 200px;
+  margin: 10px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
