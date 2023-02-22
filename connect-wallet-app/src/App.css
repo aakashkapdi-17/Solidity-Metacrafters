@@ -1,0 +1,19 @@
+.App {
+  text-align: center;
+}
+
+.box-outer {
+  border: 2px solid red;
+  margin: 10vh;
+  height: 70vh;
+}
+
+.btn {
+  padding: 15px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: aqua;
+  color: blue;
+}
