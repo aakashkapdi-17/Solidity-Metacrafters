@@ -1,0 +1,42 @@
+.connect-wallet {
+  height: 30px;
+  padding: 20px;
+}
+
+.connect-wallet-btn {
+  float: right;
+}
+
+button {
+  margin: auto;
+  cursor: pointer;
+  padding: 10px;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+button:disabled:hover {
+  cursor: not-allowed;
+  transform: none;
+}
+
+.outer-box {
+  margin: auto;
+  margin-top: 20px;
+  padding: 20px;
+  width: 50%;
+  height: 170px;
+  border: 3px dotted red;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.btn {
+  width: 100px;
+}
+.loader {
+  margin: auto;
+}
