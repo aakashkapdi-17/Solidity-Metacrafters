@@ -47,6 +47,26 @@ const App = () => {
     });
   };
 
+  //Connect wallet function
+  const connectWallet = async () => {
+    let _provider;
+    if (window.ethereum == null) {
+      console.log("MetaMask not installed; using read-only defaults");
+      _provider = ethers.getDefaultProvider();
+    } else {
+      try {
+        _provider = new ethers.BrowserProvider(window.ethereum);
+        await _provider.getSigner().then((_signer) => {
+          setsigner(_signer);
+          connectContract(_signer);
+        });
+        showSuccess("Wallet Connected");
+      } catch (error) {
+        showError("Error while connecting to wallet");
+      }
+    }
+  };
+
   //Fetching and initialising contract
 
   const connectContract = (_signer) => {
@@ -75,46 +95,34 @@ const App = () => {
 
   const callIncrement = async () => {
     setloading(true);
-    const transaction = await contract.increment();
-    await transaction.wait().then(() => {
-      //Show Success Toast
-      showSuccess("Increment Done");
-      callShowCount();
-      setloading(false);
-    });
+    try {
+      const transaction = await contract.increment();
+      await transaction.wait().then(() => {
+        //Show Success Toast
+        showSuccess("Increment Done");
+        callShowCount();
+        setloading(false);
+      });
+    } catch (e) {
+      showError("Error while Incrementing count");
+    }
+    setloading(false);
   };
 
   // CALLING DECREMENT() FUNCTION
   const callDecrement = async () => {
     setloading(true);
-    const transaction = await contract.decrement();
-    await transaction.wait().then(() => {
-      //Show Success Toast
-      showSuccess("Decrement Done");
-      callShowCount();
-      setloading(false);
-    });
-  };
-
-  //Connect wallet function
-  const connectWallet = async () => {
-    let _provider;
-    if (window.ethereum == null) {
-      console.log("MetaMask not installed; using read-only defaults");
-      _provider = ethers.getDefaultProvider();
-    } else {
-      try {
-        _provider = new ethers.BrowserProvider(window.ethereum);
-
-        await _provider.getSigner().then((_signer) => {
-          setsigner(_signer);
-          connectContract(_signer);
-        });
-        showSuccess("Wallet Connected");
-      } catch (error) {
-        showError("Error while connecting to wallet");
-      }
+    try {
+      const transaction = await contract.decrement();
+      await transaction.wait().then(() => {
+        //Show Success Toast
+        showSuccess("Decrement Done");
+        callShowCount();
+      });
+    } catch (e) {
+      showError("Error while decrementing count");
     }
+    setloading(false);
   };
 
   return (
@@ -157,6 +165,7 @@ const App = () => {
               </>
             ) : (
               <>
+                <div>Processing the Transaction...</div>
                 <div className="loader">
                   <RotatingSquare
                     height="100"
