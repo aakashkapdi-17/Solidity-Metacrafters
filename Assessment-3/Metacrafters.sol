@@ -1,46 +1,44 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Metacrafters is ERC20, Ownable {
+contract MyToken{
 
-    address[] public candidates;
+    string public tokenName;
+    string public tokenSymbol;
+    uint256 public noOfTokens;
+    address public owner;
 
-    constructor(address[] memory _candidates) ERC20("Metacrafters", "MTC") {
-        candidates=_candidates;
+    mapping(address=>uint256) tokenMap;
+
+
+    constructor(string memory _tokenName,string memory _tokenSymbol){
+        owner=msg.sender;
+        tokenName=_tokenName;
+        tokenSymbol=_tokenSymbol;
+        noOfTokens=0;
     }
 
-    function mint(address to) public onlyOwner {
-        require(balanceOf(to)==0,"Token already given");
-        _mint(to, 1);
+    modifier onlyOwner{
+        require(msg.sender==owner,"You are not the owner of the contract");
+        _;
     }
 
-    function isCandidate(address _candidateAddress) internal view returns(bool){
-        for(uint i=0;i<candidates.length;i++){
-            if(candidates[i]==_candidateAddress){
-                return true;
-            }
-        }
-        return false;
+    function mint(address _to,uint256 _noOfTokens) public onlyOwner{
+        require(_to!=address(0),"Invalid Address");
+        noOfTokens=noOfTokens+_noOfTokens;
+        tokenMap[_to]=tokenMap[_to]+_noOfTokens;
     }
 
-    function vote(address _to) public {
-        require(isCandidate(_to),"Not a candidate");
-        bool sent=transfer(_to,1);
-        require(sent,"Error in Voting");
+    function balanceOf(address _to) public view returns(uint256) {
+        return tokenMap[_to];
     }
 
-    function calculateWinner() public view onlyOwner returns(address,uint256){
-        address winner=candidates[0];
-        uint256 winVotes=balanceOf(candidates[0]);
-        for(uint256 i=1;i<candidates.length;i++){
-            if(balanceOf(candidates[i])>winVotes){
-                winner=candidates[i];
-                winVotes=balanceOf(candidates[i]);
-            }
-        }
-        return (winner,winVotes);
+    function transfer(address _to,uint256 _noOfTokens) public {
+        require(tokenMap[msg.sender]-_noOfTokens>=0,"You dont have tokens");
+        require(msg.sender!=_to,"You cant transfer tokens to yourself");
+        tokenMap[msg.sender]=tokenMap[msg.sender]-_noOfTokens;
+        tokenMap[_to]=tokenMap[_to]+_noOfTokens;
     }
+
 }
